@@ -1,0 +1,64 @@
+[package]
+name = "qlink"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/ghostkellz/qlink"
+authors = ["Ghost Kellz"]
+description = "Linux-first air-gapped QR bridge for Keystone Pro 3 hardware wallet"
+keywords = ["keystone", "qr", "hardware-wallet", "webcam", "v4l2"]
+categories = ["cryptography::cryptocurrencies", "multimedia::video"]
+rust-version = "1.85"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.42", features = ["full"] }
+async-trait = "0.1"
+clap = { version = "4.5", features = ["derive"] }
+
+# V4L2 camera access (Linux)
+v4l = "0.14"
+
+# Image processing
+image = "0.25"
+
+# QR code handling
+rqrr = "0.8"      # QR decoder - fast, Rust-native
+qrcode = "0.14"   # QR encoder
+
+# Keystone UR protocol
+hex = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+toml = "0.8"
+minicbor = { version = "0.19", features = ["alloc", "derive"] }
+ur = { git = "https://github.com/KeystoneHQ/ur-rs", tag = "0.3.3", default-features = false }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "time"] }
+tracing-appender = "0.2"
+
+# Utilities
+bytes = "1.9"
+
+[dev-dependencies]
+tokio = { version = "1.42", features = ["macros", "rt-multi-thread", "test-util"] }
+
+[features]
+default = ["camera"]
+camera = []  # Enable V4L2 camera support (Linux only)
+simulator = []  # Enable simulator mode for replaying prerecorded QR sequences
+
+[[example]]
+name = "scan_qr"
+required-features = ["camera"]
+
+[[example]]
+name = "generate_qr"
